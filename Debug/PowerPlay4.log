@@ -1,0 +1,4 @@
+﻿  Goal.3.asssignment.cpp
+C:\Users\spenc\source\repos\PowerPlay4\PowerPlay4\Goal.3.asssignment.cpp(123,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\spenc\source\repos\PowerPlay4\PowerPlay4\Goal.3.asssignment.cpp(207,35): warning C4018: '<=': signed/unsigned mismatch
+C:\Users\spenc\source\repos\PowerPlay4\PowerPlay4\Goal.3.asssignment.cpp(238): error C4716: 'calculateAC': must return a value
