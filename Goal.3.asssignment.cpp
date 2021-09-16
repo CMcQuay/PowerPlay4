@@ -226,15 +226,63 @@ void levelUp(Object& player)
 			a. if you don't, assign it.
 			b. if you do, check bonus value. Keep if new item bigger.
 	*/
+
+	player.level++;
 	std::normal_distribution<double> randomHealth(20.0 + player.level * 5, 5.0);
 	std::normal_distribution<double> randomStrength(3.0 + player.level, 1.0);
-	
+	player.health += std::max(1, (int)randomHealth(engine));
+	player.strength += std::max(1, (int)randomStrength(engine));
+
+	std::uniform_int_distribution<int> randomItem{0, (int)Item::Type::numTypes - 1};
+	std::normal_distribution<double> randomBonus{ (double)player.level, player.level / 3.0 };
+	Item newItem{ (Item::Type)randomItem(engine), randomBonus(engine) };
+	std::cout << "You have looted a ";
+	printItem(newItem);
+	std::cout << "!\n";
+
+
+	auto ItemIt{ player.inventory.find(newItem.clasification) };
+	//If the item does exist
+	if (ItemIt != player.inventory.end()) 
+	{
+		//If the new item is bigger
+		if 
+		{
+
+		}
+		//If it isn't
+		else 
+		{
+
+		}
+	}
+	//If it doesn't exist
+	else
+	{
+		player.inventory[newItem.clasification] = newItem;
+	}
 }
 
 int calculateAC(const Object& object)
 {
 	//check for armor and shield
-	//return to the combined bonus values.
+	int armorValue{ 0 };
+	int shieldValue{ 0 };
+
+	auto ItemIt{ object.inventory.find(Item::Type::armor) };
+	if (ItemIt != object.inventory.end())
+	{
+		armorValue = (ItemIt->second).bonusValue;
+	}
+
+	ItemIt = object.inventory.find(Item::Type::shield);
+	if (ItemIt != object.inventory.end())
+	{
+		shieldValue = (ItemIt->second).bonusValue;
+	}
+	//return the combined bonus values.
+	int combinedDefense = armorValue + shieldValue;
+	return combinedDefense;
 }
 
 void printName(const Object& object)
@@ -281,6 +329,11 @@ int attack(const Object& object)
 {
 	int potentialDamage{ object.strength };
 	//check for a sword. IF they have it, add to potential damage!
+	auto ItemIt{ object.inventory.find(Item::Type::sword) };
+	if (ItemIt != object.inventory.end())
+	{
+		potentialDamage += (ItemIt->second).bonusValue;
+	}
 	std::normal_distribution<double> damageDealt(potentialDamage, 2.0);
 	
 	printName(object);
