@@ -235,7 +235,7 @@ void levelUp(Object& player)
 
 	std::uniform_int_distribution<int> randomItem{0, (int)Item::Type::numTypes - 1};
 	std::normal_distribution<double> randomBonus{ (double)player.level, player.level / 3.0 };
-	Item newItem{ (Item::Type)randomItem(engine), randomBonus(engine) };
+	Item newItem{ (Item::Type)randomItem(engine), std::max( 1, (int)randomBonus(engine)) };
 	std::cout << "You have looted a ";
 	printItem(newItem);
 	std::cout << "!\n";
@@ -245,15 +245,10 @@ void levelUp(Object& player)
 	//If the item does exist
 	if (ItemIt != player.inventory.end()) 
 	{
-		//If the new item is bigger
-		if 
+		//If the new item is bigger, otherwise do nothing.
+		if (player.inventory[newItem.clasification].bonusValue < newItem.bonusValue)
 		{
-
-		}
-		//If it isn't
-		else 
-		{
-
+			player.inventory[newItem.clasification] = newItem;
 		}
 	}
 	//If it doesn't exist
@@ -266,23 +261,22 @@ void levelUp(Object& player)
 int calculateAC(const Object& object)
 {
 	//check for armor and shield
-	int armorValue{ 0 };
-	int shieldValue{ 0 };
+	int defense{ 0 };
 
 	auto ItemIt{ object.inventory.find(Item::Type::armor) };
 	if (ItemIt != object.inventory.end())
 	{
-		armorValue = (ItemIt->second).bonusValue;
+		defense = (ItemIt->second).bonusValue;
 	}
 
 	ItemIt = object.inventory.find(Item::Type::shield);
 	if (ItemIt != object.inventory.end())
 	{
-		shieldValue = (ItemIt->second).bonusValue;
+		defense += (ItemIt->second).bonusValue;
 	}
+
 	//return the combined bonus values.
-	int combinedDefense = armorValue + shieldValue;
-	return combinedDefense;
+	return defense;
 }
 
 void printName(const Object& object)
